@@ -26,4 +26,6 @@ export class AuthController {
   getFreelancers(@Query() filters: { categories: string[] }) {
     return this.authService.getFreelance(filters);
   }
+
+  // hello
 }
