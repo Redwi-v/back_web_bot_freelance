@@ -1,0 +1,22 @@
+{
+  "sessions": [
+    {
+      "id": "1607689868:1607689868",
+      "data": {
+        "__scenes": {},
+        "type": "regFreelancerSteps",
+        "role": "freelancer",
+        "name": "Misha",
+        "email": "misha.com@gamil.com",
+        "age": 67,
+        "step": 5,
+        "specialization": "designer",
+        "about": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
+        "categories": [
+          "Товары для отдыха",
+          "Продукты"
+        ]
+      }
+    }
+  ]
+}
