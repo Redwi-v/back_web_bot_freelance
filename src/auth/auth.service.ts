@@ -29,9 +29,6 @@ export class AuthService {
     return this.prisma.user.findMany({
       where: {
         role: 'freelancer',
-        categories: {
-          hasSome: filters.categories,
-        },
       },
     });
   }
