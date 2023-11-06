@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
@@ -22,7 +23,7 @@ export class AuthController {
   }
 
   @Get('freelancers')
-  getFreelancers() {
-    return this.authService.getFreelance();
+  getFreelancers(@Query() filters: { categories: string[] }) {
+    return this.authService.getFreelance(filters);
   }
 }

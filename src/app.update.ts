@@ -8,6 +8,7 @@ import textHandler, { Sessions } from './telegramBot/textHandlers';
 import { steps } from './telegramBot/steps';
 import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
+import { Get } from '@nestjs/common';
 
 @Update()
 export class AppUpdate {
@@ -17,6 +18,13 @@ export class AppUpdate {
     private auth: AuthService,
     private prisma: PrismaService,
   ) {}
+
+  @Get('/')
+  sayHello() {
+    return {
+      text: 'hello',
+    };
+  }
 
   @Start()
   async StartCommand(ctx: BotContext) {

@@ -26,10 +26,13 @@ export class AuthService {
     });
   }
 
-  getFreelance() {
+  getFreelance(filters: { categories: string[] }) {
     return this.prisma.user.findMany({
       where: {
         role: 'freelancer',
+        categories: {
+          hasSome: filters.categories,
+        },
       },
     });
   }

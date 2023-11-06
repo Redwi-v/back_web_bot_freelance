@@ -15,17 +15,17 @@ export const steps = {
     {
       handler: textHandler[Sessions.REGISTRATION_EMAIL],
       endCallBack: (ctx: BotContext) => {
-        ctx.reply('Укажите Ваш возраст цифрами:');
+        ctx.reply('Укажите ваш возраст цифрами:');
       },
     },
     {
       handler: textHandler[Sessions.REGISTRATION_AGE],
       endCallBack: async (ctx: BotContext) => {
         ctx.reply(
-          `${ctx.session.name} , пожалуйста проверти свои данные: 
+          `${ctx.session.name} , пожалуйста проверьте свои данные: 
           Email: ${ctx.session.email};
           Роль: ${ctx.session.role};
-          Возрос: ${ctx.session.role};
+          Возраст: ${ctx.session.role};
           `,
           Markup.keyboard([Markup.button.callback('Да все верно', 'yes')]),
         );
@@ -78,9 +78,9 @@ export const steps = {
       handler: textHandler[Sessions.REGISTRATION_PRODUCT_CATEGORIES],
       endCallBack: async (ctx: BotContext) => {
         ctx.reply(
-          `${ctx.session.name} , пожалуйста проверти свои данные:
+          `${ctx.session.name} , пожалуйста проверьте свои данные: 
           Email: ${ctx.session.email};
-          Родь: ${ctx.session.role};
+          Роль: ${ctx.session.role};
           Возраст: ${ctx.session.age};
           Категории: ${ctx.session.categories?.join('|')};
           `,
