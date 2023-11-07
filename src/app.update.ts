@@ -76,7 +76,6 @@ export class AppUpdate {
           age: age,
           specialization: specialization || '',
           about: about || 'about',
-          categories: categories,
         },
       });
     }
