@@ -9,6 +9,7 @@ import { steps } from './telegramBot/steps';
 import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
 import { Get } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Update()
 export class AppUpdate {
@@ -48,7 +49,10 @@ export class AppUpdate {
     const age = ctx.session.age;
     const specialization = ctx.session.specialization;
     const about = ctx.session.about;
-    const categories = ctx.session.categories;
+    const categories = ctx.session.categories as
+      | Prisma.CategorieUncheckedCreateNestedManyWithoutUserInput
+      | Prisma.CategorieCreateNestedManyWithoutUserInput
+      | undefined;
 
     if (!name || !email || !role || !age) return;
 
@@ -72,10 +76,9 @@ export class AppUpdate {
           age: age,
           specialization: specialization || '',
           about: about || 'about',
-          categories: categories || [],
+          categories: categories,
         },
       });
-      console.log(res);
     }
 
     ctx.reply('Мы занесли вас в базу, теперь можете пользоваться приложением');

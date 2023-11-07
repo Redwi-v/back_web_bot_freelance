@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma.service';
 import { AuthService } from './auth/auth.service';
+import { UtilsModule } from './utils/utils.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -20,6 +21,7 @@ const sessions = new LocalSession({ database: 'session_db.json' });
       token: process.env.BOT_TOKEN || '',
     }),
     AuthModule,
+    UtilsModule,
   ],
   providers: [AppService, AppUpdate, PrismaService, AuthService],
 })
