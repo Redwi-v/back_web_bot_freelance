@@ -24,6 +24,8 @@ export class AuthController {
 
   @Get('user')
   getUserById(@Query() query: { id: string }) {
+    console.log(query);
+
     return this.authService.getUserById(query.id);
   }
 }
