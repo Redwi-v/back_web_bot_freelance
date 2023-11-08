@@ -79,7 +79,7 @@ export class AppUpdate {
       userProfilePhoto.photos[0][0].file_id,
     );
 
-    const path = `https://api.telegram.org/file/bot6307857874:AAHbNX9Mxsv6bMxlZcjSM2RG2Eeef1ETBVA/${file.file_path}`;
+    const path = `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}`;
 
     const newUserData: Prisma.UserCreateInput = {
       telegramId: String(telegramId),
