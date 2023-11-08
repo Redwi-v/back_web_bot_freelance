@@ -98,7 +98,15 @@ export class AppUpdate {
 
     this.auth.register(newUserData, categories || []);
 
-    ctx.reply('Мы занесли вас в базу, теперь можете пользоваться приложением');
+    ctx.reply(
+      'Мы занесли вас в базу, теперь можете пользоваться приложением 🎉',
+      Markup.inlineKeyboard([
+        Markup.button.webApp(
+          'Добро пожаловать😉',
+          'https://test-d681d.web.app',
+        ),
+      ]),
+    );
     ctx.session.categories = [];
   }
 

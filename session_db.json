@@ -9,7 +9,7 @@
         "name": "Андрей",
         "email": "Dhdhdh@gn.com",
         "age": 55,
-        "step": 5,
+        "step": 0,
         "specialization": "content_manager",
         "about": "Djdufjjf djdidididd diduduhd djdfuifugfjf djfufurhr djfifufud djdjfjdi djfifidid djfididjd f jf jfifjd djdidjd fjfifjd",
         "categories": []
@@ -19,13 +19,13 @@
       "id": "6550263737:6550263737",
       "data": {
         "__scenes": {},
-        "type": "regFreelancerSteps",
-        "step": 5,
-        "role": "freelancer",
+        "type": "chooseRole",
+        "step": 0,
+        "role": "customer",
         "specialization": "content_manager",
         "name": "Shampur",
-        "email": "Djdjdhdjdjdj@gm.com",
-        "age": 56,
+        "email": "Hdhdj@gmai.com",
+        "age": 55,
         "about": "Djdjfufjfifif djfifigirirkd djfifjg if kfks djfjfjfjbdisusge if jf BB jdjdjd djfjfjgjfifjjf fjfjfjfjfifi didjfjfifir fjffjdidjnd d fjfifif it btkfosbd fjdjfigif sjdifitirbsvfofifns fifjhdbsifjfbdjf dkfjdjdifbf d dkdjfbs dkdjebdjdkfvdifjdb djdndjd djdjfjf",
         "categories": []
       }
