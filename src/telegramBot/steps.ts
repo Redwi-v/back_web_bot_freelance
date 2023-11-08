@@ -3,6 +3,10 @@ import { Sessions } from './textHandlers';
 import { BotContext } from './context';
 import generateTextFromArr from 'src/utils/generateTextFromArr';
 import { Markup } from 'telegraf';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
+
+const prisma = new PrismaService();
 
 export const steps = {
   regCustomerSteps: [
@@ -27,7 +31,13 @@ export const steps = {
           Роль: ${ctx.session.role};
           Возраст: ${ctx.session.role};
           `,
-          Markup.keyboard([Markup.button.callback('Да все верно', 'yes')]),
+          (() => {
+            const key = Markup.keyboard([
+              Markup.button.callback('Да все верно', 'yes'),
+            ]);
+            key.reply_markup.resize_keyboard = true;
+            return key;
+          })(),
         );
       },
     },
@@ -64,13 +74,19 @@ export const steps = {
     {
       handler: textHandler[Sessions.REGISTRATION_ABOUT],
       endCallBack: async (ctx: BotContext) => {
+        const categories = await prisma.categorie.findMany();
+
+        const keyboard = Markup.keyboard(
+          categories.map((cat) => {
+            return Markup.button.callback(cat.name, cat.name);
+          }),
+        );
+
+        keyboard.reply_markup.resize_keyboard = true;
+
         ctx.reply(
           `Укажите категории товаров, на которых Вы специализируетесь: `,
-          Markup.keyboard([
-            Markup.button.callback('Любые', 'any'),
-            Markup.button.callback('Продукты', 'products'),
-            Markup.button.callback('Товары для отдыха', 'relax'),
-          ]),
+          keyboard,
         );
       },
     },
@@ -84,7 +100,13 @@ export const steps = {
           Возраст: ${ctx.session.age};
           Категории: ${ctx.session.categories?.join('|')};
           `,
-          Markup.keyboard([Markup.button.callback('Да все верно', 'yes')]),
+          (() => {
+            const key = Markup.keyboard([
+              Markup.button.callback('Да все верно', 'yes'),
+            ]);
+            key.reply_markup.resize_keyboard = true;
+            return key;
+          })(),
         );
       },
     },

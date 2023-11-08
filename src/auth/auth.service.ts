@@ -1,26 +1,50 @@
 import { Body, Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
+import { response } from 'express';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  register(userData: User) {
-    return this.prisma.user.create({
-      data: {
-        ...userData,
-        categories: {
-          connect: [],
+  async register(userData: Prisma.UserCreateInput, categories?: string[]) {
+    try {
+      const categoriesData: Prisma.CategorieWhereUniqueInput[] = [];
+
+      if (categories) {
+        categories.forEach((catName) => {
+          const HaveCat = this.prisma.categorie.findUnique({
+            where: {
+              name: catName,
+            },
+          });
+
+          if (!HaveCat) return;
+
+          categoriesData.push({
+            name: catName,
+          });
+        });
+      }
+
+      await this.prisma.user.create({
+        data: {
+          ...userData,
+          categories: {
+            connect: categoriesData,
+          },
+          rate: 0,
         },
-      },
-    });
+      });
+    } catch (error) {}
+
+    return;
   }
 
-  registerMany(users: Prisma.UserCreateManyInput[]) {}
+  async registerMany(users: Prisma.UserCreateManyInput[]) {}
 
-  getUserById(id: number | string) {
-    return this.prisma.user.findUnique({
+  async getUserById(id: number | string) {
+    const data = await this.prisma.user.findUnique({
       where: {
         id: +id,
       },
@@ -28,23 +52,57 @@ export class AuthService {
         categories: true,
       },
     });
+
+    return data;
   }
 
-  getFreelance(filters: { categories: string[] }) {
+  async getUserByTgId(TgId: string) {
+    const data = await this.prisma.user.findUnique({
+      where: {
+        telegramId: String(TgId),
+      },
+      include: {
+        activeRole: true,
+        categories: true,
+        responses: true,
+        reviewsList: true,
+      },
+    });
+
+    return data;
+  }
+
+  async getFreelance(filters: { categories: string[] }) {
     let prismaParams: Prisma.UserFindManyArgs = {
       where: {
-        role: 'freelancer',
+        roleIndex: 'freelancer',
       },
     };
 
     if (filters.categories) {
+      const andParams: Prisma.CategorieWhereInput[] = [];
+
+      filters.categories.forEach((filterName) => {
+        andParams.push({
+          name: filterName,
+        });
+      });
+
       prismaParams.where = {
         ...prismaParams.where,
 
-        categories: {},
+        categories: {
+          some: {
+            OR: andParams,
+          },
+        },
       };
     }
 
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany(prismaParams);
+  }
+
+  async getCategories() {
+    return this.prisma.categorie.findMany({});
   }
 }

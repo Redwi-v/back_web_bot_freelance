@@ -7,15 +7,27 @@
         "type": "regFreelancerSteps",
         "role": "freelancer",
         "name": "Андрей",
-        "email": "mydusfj@gmail.com",
-        "age": 24,
+        "email": "Dhdhdh@gn.com",
+        "age": 55,
         "step": 5,
         "specialization": "content_manager",
-        "about": "sd;fjkas;d лоажывлдао жывлдаоыв ждлаов джлоаывжлд оаывждало sdl;kfjd джловаж лдоавжлд оавжлд ова джаловж лдовжд ловадж лво",
-        "categories": [
-          "Товары для отдыха",
-          "Продукты"
-        ]
+        "about": "Djdufjjf djdidididd diduduhd djdfuifugfjf djfufurhr djfifufud djdjfjdi djfifidid djfididjd f jf jfifjd djdidjd fjfifjd",
+        "categories": []
+      }
+    },
+    {
+      "id": "6550263737:6550263737",
+      "data": {
+        "__scenes": {},
+        "type": "regFreelancerSteps",
+        "step": 5,
+        "role": "freelancer",
+        "specialization": "content_manager",
+        "name": "Shampur",
+        "email": "Djdjdhdjdjdj@gm.com",
+        "age": 56,
+        "about": "Djdjfufjfifif djfifigirirkd djfifjg if kfks djfjfjfjbdisusge if jf BB jdjdjd djfjfjgjfifjjf fjfjfjfjfifi didjfjfifir fjffjdidjnd d fjfifif it btkfosbd fjdjfigif sjdifitirbsvfofifns fifjhdbsifjfbdjf dkfjdjdifbf d dkdjfbs dkdjebdjdkfvdifjdb djdndjd djdjfjf",
+        "categories": []
       }
     }
   ]

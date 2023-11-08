@@ -9,8 +9,14 @@ import { steps } from './telegramBot/steps';
 import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
 import { Get } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
+const getUserId = (message: any): Prisma.UserCreateInput => {
+  if (message.reply_to_message) {
+    return message.reply_to_message.from.id;
+  }
+  return message.from.id;
+};
 @Update()
 export class AppUpdate {
   constructor(
@@ -36,51 +42,64 @@ export class AppUpdate {
       'контент-менеджер или менеджер аккаунтов.',
     ]);
 
-    ctx.session.type = 'chooseRole';
-    ctx.session.step = 0;
-    await ctx.reply(text, chooseRole());
+    const telegramId = getUserId(ctx.message);
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        telegramId: String(telegramId),
+      },
+    });
+
+    if (user) {
+      ctx.reply('Вы уже зарегистрированы💖');
+    } else {
+      ctx.session.type = 'chooseRole';
+      ctx.session.step = 0;
+      await ctx.reply(text, chooseRole());
+    }
   }
 
   @Hears('Да все верно')
   async register(ctx: BotContext) {
     const name = ctx.session.name;
     const email = ctx.session.email;
-    const role = ctx.session.role;
+    const roleIndex = ctx.session.role;
     const age = ctx.session.age;
     const specialization = ctx.session.specialization;
     const about = ctx.session.about;
-    const categories = ctx.session.categories as
-      | Prisma.CategorieUncheckedCreateNestedManyWithoutUserInput
-      | Prisma.CategorieCreateNestedManyWithoutUserInput
-      | undefined;
+    const categories = ctx.session.categories;
 
-    if (!name || !email || !role || !age) return;
+    const telegramId = getUserId(ctx.message);
 
-    if (role === 'customer') {
-      const res = await this.prisma.user.create({
-        data: {
-          name: name,
-          email: email,
-          role: role,
-          age: age,
-          specialization: '',
+    const userProfilePhoto = await this.bot.telegram.getUserProfilePhotos(
+      //@ts-ignore
+      telegramId,
+    );
+    const file = await this.bot.telegram.getFile(
+      userProfilePhoto.photos[0][0].file_id,
+    );
+
+    const path = `https://api.telegram.org/file/bot6307857874:AAHbNX9Mxsv6bMxlZcjSM2RG2Eeef1ETBVA/${file.file_path}`;
+
+    const newUserData: Prisma.UserCreateInput = {
+      telegramId: String(telegramId),
+      about: about || null,
+      age: age,
+      email: email,
+      name: name,
+      avatarUrl: path,
+      specialization: specialization,
+      activeRole: {
+        connect: {
+          index: roleIndex,
         },
-      });
-      console.log(res);
-    } else {
-      const res = await this.prisma.user.create({
-        data: {
-          name: name,
-          email: email,
-          role: role,
-          age: age,
-          specialization: specialization || '',
-          about: about || 'about',
-        },
-      });
-    }
+      },
+    };
+
+    this.auth.register(newUserData, categories || []);
 
     ctx.reply('Мы занесли вас в базу, теперь можете пользоваться приложением');
+    ctx.session.categories = [];
   }
 
   @On('text')
@@ -95,14 +114,18 @@ export class AppUpdate {
 
             const userName = ctx.message?.from.first_name;
 
+            const key = Markup.keyboard([
+              Markup.button.callback('Оставить так', 'leave_a_name'),
+            ]);
+
+            key.reply_markup.resize_keyboard = true;
+
             ctx.reply(
               generateTextFromArr([
                 `Я определил Ваше имя как ${userName}`,
                 ' Подтвердите его, либо введите свое значение:',
               ]),
-              Markup.keyboard([
-                Markup.button.callback('Оставить так', 'leave_a_name'),
-              ]),
+              key,
             );
           } else {
             ctx.session.type = 'chooseSpecialization';
@@ -131,6 +154,12 @@ export class AppUpdate {
             if (specialization === 'designer') {
               ctx.session.type = 'promoCode';
 
+              const key = Markup.keyboard([
+                Markup.button.callback('Нет промо-кода', 'no_promo'),
+              ]);
+
+              key.reply_markup.resize_keyboard = true;
+
               ctx.reply(
                 generateTextFromArr([
                   'Для регистрации в нашем боте как аккредитованный Дизайнер,',
@@ -138,21 +167,23 @@ export class AppUpdate {
                   'онлайн-школе “Магия Инфографики” Оксаны Ивойловой.',
                   'Если такой промокод у вас есть, напишите его:',
                 ]),
-                Markup.keyboard([
-                  Markup.button.callback('Нет промо-кода', 'no_promo'),
-                ]),
+                key,
               );
             } else {
               ctx.session.type = 'regFreelancerSteps';
               const userName = ctx.message?.from.first_name;
+              const key = Markup.keyboard([
+                Markup.button.callback('Оставить так', 'leave_a_name'),
+              ]);
+
+              key.reply_markup.resize_keyboard = true;
+
               ctx.reply(
                 generateTextFromArr([
                   `Я определил Ваше имя как ${userName}`,
                   ' Подтвердите его, либо введите свое значение:',
                 ]),
-                Markup.keyboard([
-                  Markup.button.callback('Оставить так', 'leave_a_name'),
-                ]),
+                key,
               );
             }
           },
@@ -166,14 +197,18 @@ export class AppUpdate {
 
           const userName = ctx.message?.from.first_name;
 
+          const key = Markup.keyboard([
+            Markup.button.callback('Оставить так', 'leave_a_name'),
+          ]);
+
+          key.reply_markup.resize_keyboard = true;
+
           ctx.reply(
             generateTextFromArr([
               `Я определил Ваше имя как ${userName}`,
               ' Подтвердите его, либо введите свое значение:',
             ]),
-            Markup.keyboard([
-              Markup.button.callback('Оставить так', 'leave_a_name'),
-            ]),
+            key,
           );
         });
         return;
@@ -183,6 +218,10 @@ export class AppUpdate {
       const step = ctx.session.step || 0;
 
       if (sessionType) {
+        const params = steps[sessionType][step];
+
+        if (!params) return;
+
         const { handler, endCallBack } = steps[sessionType][step];
 
         handler(ctx, () => {

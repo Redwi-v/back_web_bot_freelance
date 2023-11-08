@@ -5,6 +5,9 @@ import botErrHandler from './botErrHandler';
 import { validateEmail } from 'src/utils/validateEmail';
 import generateTextFromArr from 'src/utils/generateTextFromArr';
 import { Markup } from 'telegraf';
+import { PrismaService } from 'src/prisma.service';
+
+const prisma = new PrismaService();
 
 export enum Sessions {
   REGISTRATION_ROLE = 'REGISTRATION',
@@ -84,14 +87,27 @@ const textHandler = {
     });
 
     if (isInclude) {
+
       ctx.session.categories = ctx.session.categories.filter(
         (cat) => cat !== messageText,
       );
+
     } else {
       ctx.session.categories.push(messageText);
     }
 
     const styledArr = ctx.session.categories.map((cat) => `🔷${cat}`);
+
+    const categories = await prisma.categorie.findMany();
+
+    const keyboard = Markup.keyboard([
+      ...categories.map((cat) => {
+        return Markup.button.callback(cat.name, cat.name);
+      }),
+      Markup.button.callback('Далее', 'next'),
+    ]);
+
+    keyboard.reply_markup.resize_keyboard = true;
 
     ctx.reply(
       `
@@ -99,12 +115,7 @@ const textHandler = {
       '\n',
     )} \n\nВы можете указать еще категории или нажать Далее!
     `,
-      Markup.keyboard([
-        Markup.button.callback('Любые', 'any'),
-        Markup.button.callback('Продукты', 'products'),
-        Markup.button.callback('Товары для отдыха', 'relax'),
-        Markup.button.callback('Далее', 'next'),
-      ]),
+      keyboard,
     );
   },
 
@@ -118,7 +129,7 @@ const textHandler = {
     if (!messageText) return botErrHandler.incorrectMessage(ctx);
 
     if (messageText.toLocaleLowerCase() === 'оставить так') {
-      ctx.session.name = ctx.message?.from.first_name;
+      ctx.session.name = ctx.message?.from.first_name as string;
     } else {
       ctx.session.name = messageText;
     }

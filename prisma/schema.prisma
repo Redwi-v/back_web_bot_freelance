@@ -10,26 +10,71 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  index String @unique
+  User  User[]
+}
+
 model User {
-  id Int @id @default(autoincrement())
+  id         Int    @id @default(autoincrement())
+  telegramId String @unique
+
+  activeRole Role   @relation(fields: [roleIndex], references: [index])
+  roleIndex  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   email          String
-  role           String
   age            Int
   specialization String
-  about          String?
   name           String
+  about          String?
+  lastName       String?
+  avatarUrl      String?
 
-  categories Categorie[]
+  rating Float @default(0)
+  rate   Int?
+
+  responses Respone[]
+
+  categories  Categorie[]
+  reviewsList Review[]
+  Orders      Order[]
+}
+
+model Respone {
+  id Int @id @default(autoincrement())
+
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  Order   Order? @relation(fields: [orderId], references: [id])
+  orderId Int?
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  description String
+  price       Int
+
+  author User @relation(fields: [userId], references: [id])
+  userId Int
+
+  respones Respone[]
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
 }
 
 model Categorie {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @unique
 
-  User   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  User User[]
 }

@@ -6,7 +6,7 @@ export enum Roles {
 }
 
 export const chooseRole = () => {
-  return Markup.keyboard(
+  const key = Markup.keyboard(
     [
       Markup.button.callback('Я фрилансер', Roles.FREElANCER),
       Markup.button.callback('Я заказчик', Roles.CUSTOMER),
@@ -15,4 +15,8 @@ export const chooseRole = () => {
       columns: 2,
     },
   );
+
+  key.reply_markup.resize_keyboard = true;
+
+  return key;
 };

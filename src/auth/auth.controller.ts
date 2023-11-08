@@ -8,7 +8,7 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('register')
-  register(@Body() userData: User) {
+  register(@Body() userData: Prisma.UserCreateInput) {
     return this.authService.register(userData);
   }
 
@@ -18,14 +18,34 @@ export class AuthController {
   }
 
   @Get('freelancers')
-  getFreelancers(@Query() filters: { categories: string[] }) {
-    return this.authService.getFreelance(filters);
+  getFreelancers(
+    @Query()
+    params: {
+      categories: string[];
+    },
+  ) {
+    return this.authService.getFreelance({
+      categories: params.categories,
+    });
   }
 
   @Get('user')
   getUserById(@Query() query: { id: string }) {
-    console.log(query);
-
     return this.authService.getUserById(query.id);
+  }
+
+  @Get('tgUser')
+  async getUserByTgId(@Query() query: { id: string }) {
+    console.log(query.id);
+
+    const data = await this.authService.getUserByTgId(query.id);
+    console.log(data);
+
+    return data;
+  }
+
+  @Get('categories')
+  async getCategories() {
+    return this.authService.getCategories();
   }
 }
