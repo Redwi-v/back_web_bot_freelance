@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, HttpCode, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Prisma, User } from '@prisma/client';
+import { query } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -36,10 +37,7 @@ export class AuthController {
 
   @Get('tgUser')
   async getUserByTgId(@Query() query: { id: string }) {
-    console.log(query.id);
-
     const data = await this.authService.getUserByTgId(query.id);
-    console.log(data);
 
     return data;
   }
@@ -47,5 +45,28 @@ export class AuthController {
   @Get('categories')
   async getCategories() {
     return this.authService.getCategories();
+  }
+
+  @Post('order')
+  async createOrder(
+    @Body()
+    orderData: {
+      description: string;
+      userTgId: string;
+      categories: string[];
+      price: number;
+    },
+  ) {
+    return this.authService.createOrder(orderData);
+  }
+
+  @Get('getOrdersList')
+  async getOrdersList(@Query() filters: { categories: string[] }) {
+    return this.authService.getAllOrders(filters);
+  }
+
+  @Get('orderById')
+  async getOrder(@Query() query: { id: string }) {
+    return this.authService.getOrderById(+query.id);
   }
 }

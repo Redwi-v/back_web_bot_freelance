@@ -7,11 +7,11 @@
         "type": "regFreelancerSteps",
         "role": "freelancer",
         "name": "Андрей",
-        "email": "Dhdhdh@gn.com",
-        "age": 55,
-        "step": 0,
-        "specialization": "content_manager",
-        "about": "Djdufjjf djdidididd diduduhd djdfuifugfjf djfufurhr djfifufud djdjfjdi djfifidid djfididjd f jf jfifjd djdidjd fjfifjd",
+        "email": "fdfjldfkj@gmail.com",
+        "age": 33,
+        "step": 5,
+        "specialization": "designer",
+        "about": "ksdjf;lkd ожалдо влдао sd;klfj жвлдоа жвдлао влджаовжд лоавлд ожвлдаовджло лджао а жв жвлдаоывлдж овджл овлдо длджыл jsl;dkfj",
         "categories": []
       }
     },
@@ -19,7 +19,7 @@
       "id": "6550263737:6550263737",
       "data": {
         "__scenes": {},
-        "type": "chooseRole",
+        "type": "regCustomerSteps",
         "step": 0,
         "role": "customer",
         "specialization": "content_manager",

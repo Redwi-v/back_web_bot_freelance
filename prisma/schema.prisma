@@ -62,7 +62,8 @@ model Order {
   author User @relation(fields: [userId], references: [id])
   userId Int
 
-  respones Respone[]
+  respones   Respone[]
+  categories Categorie[]
 }
 
 model Review {
@@ -76,5 +77,6 @@ model Categorie {
   id   Int    @id @default(autoincrement())
   name String @unique
 
-  User User[]
+  User  User[]
+  Order Order[]
 }
