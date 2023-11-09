@@ -1,5 +1,23 @@
 {
   "sessions": [
- 
+    {
+      "id": "1607689868:1607689868",
+      "data": {
+        "__scenes": {}
+      }
+    },
+    {
+      "id": "6550263737:6550263737",
+      "data": {
+        "__scenes": {},
+        "type": "regCustomerSteps",
+        "step": 3,
+        "role": "customer",
+        "name": "Shampur",
+        "email": "Ggf@gmail.com",
+        "age": 55,
+        "categories": []
+      }
+    }
   ]
 }

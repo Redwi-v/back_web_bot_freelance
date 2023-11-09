@@ -15,6 +15,7 @@ export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   async register(userData: Prisma.UserCreateInput, categories?: string[]) {
+
     try {
       const categoriesData: Prisma.CategorieWhereUniqueInput[] = [];
 
@@ -43,7 +44,9 @@ export class AuthService {
           rate: 0,
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
 
     return;
   }

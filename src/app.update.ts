@@ -88,7 +88,7 @@ export class AppUpdate {
       email: email,
       name: name,
       avatarUrl: path,
-      specialization: specialization,
+      specialization: specialization || '',
       activeRole: {
         connect: {
           index: roleIndex,
@@ -96,8 +96,11 @@ export class AppUpdate {
       },
     };
 
-    this.auth.register(newUserData, categories || []);
+    
+    const res = await this.auth.register(newUserData, categories || []);
 
+    console.log(res);
+    
     ctx.reply(
       'Мы занесли вас в базу, теперь можете пользоваться приложением 🎉',
       Markup.inlineKeyboard([
