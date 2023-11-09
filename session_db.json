@@ -1,34 +1,5 @@
 {
   "sessions": [
-    {
-      "id": "1607689868:1607689868",
-      "data": {
-        "__scenes": {},
-        "type": "regFreelancerSteps",
-        "role": "freelancer",
-        "name": "Андрей",
-        "email": "fdfjldfkj@gmail.com",
-        "age": 33,
-        "step": 5,
-        "specialization": "designer",
-        "about": "ksdjf;lkd ожалдо влдао sd;klfj жвлдоа жвдлао влджаовжд лоавлд ожвлдаовджло лджао а жв жвлдаоывлдж овджл овлдо длджыл jsl;dkfj",
-        "categories": []
-      }
-    },
-    {
-      "id": "6550263737:6550263737",
-      "data": {
-        "__scenes": {},
-        "type": "regCustomerSteps",
-        "step": 0,
-        "role": "customer",
-        "specialization": "content_manager",
-        "name": "Shampur",
-        "email": "Hdhdj@gmai.com",
-        "age": 55,
-        "about": "Djdjfufjfifif djfifigirirkd djfifjg if kfks djfjfjfjbdisusge if jf BB jdjdjd djfjfjgjfifjjf fjfjfjfjfifi didjfjfifir fjffjdidjnd d fjfifif it btkfosbd fjdjfigif sjdifitirbsvfofifns fifjhdbsifjfbdjf dkfjdjdifbf d dkdjfbs dkdjebdjdkfvdifjdb djdndjd djdjfjf",
-        "categories": []
-      }
-    }
+ 
   ]
 }
