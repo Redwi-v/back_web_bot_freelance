@@ -29,7 +29,7 @@ export const steps = {
           `${ctx.session.name} , пожалуйста проверьте свои данные: 
           Email: ${ctx.session.email};
           Роль: ${ctx.session.role};
-          Возраст: ${ctx.session.role};
+          Возраст: ${ctx.session.age};
           `,
           (() => {
             const key = Markup.keyboard([
