@@ -177,7 +177,7 @@ const textHandler = {
     if (messageText.toLocaleLowerCase() === 'я контент-менеджер') {
       specialization = 'content_manager';
     }
-    if (messageText.toLocaleLowerCase() === 'Инфографика') {
+    if (messageText.toLocaleLowerCase() === 'инфографика') {
       specialization = 'designer';
     }
     if (messageText.toLocaleLowerCase() === 'я менеджер аккаунтов') {
