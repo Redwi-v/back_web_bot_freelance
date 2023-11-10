@@ -185,6 +185,7 @@ const textHandler = {
     }
 
     ctx.session.specialization = specialization || 'next';
+    console.log(ctx.session.specialization )
     endCallBack(ctx, specialization);
   },
 
