@@ -184,6 +184,7 @@ const textHandler = {
       specialization = 'account_manager';
     }
 
+    console.log(specialization)
     ctx.session.specialization = specialization || 'next';
     console.log(ctx.session.specialization )
     endCallBack(ctx, specialization);
