@@ -177,14 +177,14 @@ const textHandler = {
     if (messageText.toLocaleLowerCase() === 'я контент-менеджер') {
       specialization = 'content_manager';
     }
-    if (messageText.toLocaleLowerCase() === 'я дизайнер') {
+    if (messageText.toLocaleLowerCase() === 'Инфографика') {
       specialization = 'designer';
     }
     if (messageText.toLocaleLowerCase() === 'я менеджер аккаунтов') {
       specialization = 'account_manager';
     }
 
-    ctx.session.specialization = specialization;
+    ctx.session.specialization = specialization || 'next';
     endCallBack(ctx, specialization);
   },
 
