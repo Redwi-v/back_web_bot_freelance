@@ -143,12 +143,13 @@ export class AppUpdate {
             ctx.reply(
               'Отлично! Осталось определиться со специализацией:',
               Markup.keyboard([
-                Markup.button.callback('Я дизайнер', 'designer'),
-                Markup.button.callback('Я контент-менеджер', 'content_manager'),
-                Markup.button.callback(
-                  'Я менеджер аккаунтов',
-                  'account_manager',
-                ),
+                Markup.button.callback('Инфографика', 'designer'),
+                Markup.button.callback('SEO', 'content_manager'),
+                Markup.button.callback('Менеджеры','account_manager'),
+                     Markup.button.callback('Сертификации/декларации','dfkdkfj'),
+                     Markup.button.callback('Бухгалтерия','dfjdklfjk'),
+                     Markup.button.callback('Фотографы','photo'),
+                     Markup.button.callback('Обучение','work'),
               ]),
             );
           }
