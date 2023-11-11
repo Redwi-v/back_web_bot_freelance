@@ -81,25 +81,25 @@ export class AppUpdate {
 
     const path = `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}`;
 
-    const newUserData: Prisma.UserCreateInput = {
-      telegramId: String(telegramId),
-      about: about || null,
-      age: age,
-      email: email,
-      name: name,
-      avatarUrl: path,
-      specialization: specialization || '',
-      activeRole: {
-        connect: {
-          index: roleIndex,
-        },
-      },
-    };
+    // const newUserData: Prisma.UserCreateInput = {
+    //   telegramId: String(telegramId),
+    //   about: about || null,
+    //   age: age,
+    //   email: email,
+    //   name: name,
+    //   avatarUrl: path,
+    //   specialization: specialization || '',
+    //   activeRole: {
+    //     connect: {
+    //       index: roleIndex,
+    //     },
+    //   },
+    // };
 
     
-    const res = await this.auth.register(newUserData, categories || []);
+    // const res = await this.auth.register(newUserData, categories || []);
 
-    console.log(res);
+    // console.log(res);
     
     ctx.reply(
       'Мы занесли вас в базу, теперь можете пользоваться приложением 🎉',
