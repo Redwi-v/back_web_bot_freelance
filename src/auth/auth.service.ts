@@ -1,57 +1,45 @@
-import { Body, Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
-import { response } from 'express';
+import {  Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import { ICreateUserData } from './auth.types';
 
-interface IOrder {
-  description: string;
-  price: number;
-  userTgId: string;
-  categories: string[];
-}
+
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  async register(userData: Prisma.UserCreateInput, categories?: string[]) {
-
+  async register(userData: ICreateUserData) {
     try {
-      const categoriesData: Prisma.CategorieWhereUniqueInput[] = [];
-
-      if (categories) {
-        categories.forEach((catName) => {
-          const HaveCat = this.prisma.categorie.findUnique({
-            where: {
-              name: catName,
-            },
-          });
-
-          if (!HaveCat) return;
-
-          categoriesData.push({
-            name: catName,
-          });
-        });
-      }
-
-      await this.prisma.user.create({
+      return this.prisma.user.create({
         data: {
-          ...userData,
-          categories: {
-            connect: categoriesData,
+          age: userData.age,
+          email: userData.email,
+          name: userData.name,
+          telegramId: userData.telegramId,
+          about: userData.about,
+
+          activeRole:  {
+            connect: {
+              index:   userData.activeRoleIndex || 'customer'
+            }
           },
-          rate: 0,
-        },
-      });
+
+          avatarUrl: userData.avatarUrl,
+
+          categories: {
+            connect: userData.categoriesIdentifiers || []
+          },
+          specializations: {
+            connect: userData.categoriesIdentifiers || []
+          }
+        }
+      })
+
     } catch (error) {
       console.log(error);
     }
-
-    return;
   }
-
-  async registerMany(users: Prisma.UserCreateManyInput[]) {}
 
   async getUserById(id: number | string) {
     const data = await this.prisma.user.findUnique({
@@ -60,11 +48,20 @@ export class AuthService {
       },
       include: {
         categories: true,
+        activeRole: true,
+        Orders: true,
+        responses: true,
+        reviewsList: true,
+        specializations: true
       },
     });
 
     return data;
   }
+
+  async registerMany(users: Prisma.UserCreateManyInput[]) {}
+
+
 
   async getUserByTgId(TgId: string) {
     const data = await this.prisma.user.findUnique({
@@ -117,84 +114,5 @@ export class AuthService {
     return this.prisma.categorie.findMany({});
   }
 
-  async createOrder(order: IOrder) {
-    const { description, categories, price, userTgId } = order;
 
-    const categoriesData: Prisma.CategorieWhereUniqueInput[] = [];
-
-    if (categories) {
-      categories.forEach((catName) => {
-        const HaveCat = this.prisma.categorie.findUnique({
-          where: {
-            name: catName,
-          },
-        });
-
-        if (!HaveCat) return;
-
-        categoriesData.push({
-          name: catName,
-        });
-      });
-    }
-
-    return this.prisma.order.create({
-      data: {
-        description: description,
-        price: Number(price),
-        author: {
-          connect: {
-            telegramId: String(userTgId),
-          },
-        },
-
-        categories: {
-          connect: categoriesData,
-        },
-      },
-    });
-  }
-
-  async getOrderById(orderId: number) {
-    return this.prisma.order.findUnique({
-      where: {
-        id: orderId,
-      },
-      include: {
-        categories: true,
-        author: true,
-      },
-    });
-  }
-
-  async getAllOrders(filters: { categories: string[] }) {
-    let prismaParams: Prisma.OrderFindManyArgs = {
-      where: {},
-      include: {
-        author: true,
-      },
-    };
-
-    if (filters.categories) {
-      const andParams: Prisma.CategorieWhereInput[] = [];
-
-      filters.categories.forEach((filterName) => {
-        andParams.push({
-          name: filterName,
-        });
-      });
-
-      prismaParams.where = {
-        ...prismaParams.where,
-
-        categories: {
-          some: {
-            OR: andParams,
-          },
-        },
-      };
-    }
-
-    return this.prisma.order.findMany(prismaParams);
-  }
 }

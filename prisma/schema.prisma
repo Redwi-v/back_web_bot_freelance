@@ -25,22 +25,22 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email          String
-  age            Int
-  specialization String
-  name           String
-  about          String?
-  lastName       String?
-  avatarUrl      String?
+  email     String
+  age       Int
+  name      String
+  about     String?
+  lastName  String?
+  avatarUrl String?
 
   rating Float @default(0)
   rate   Int?
 
   responses Respone[]
 
-  categories  Categorie[]
-  reviewsList Review[]
-  Orders      Order[]
+  specializations Specialization[]
+  categories      Categorie[]
+  reviewsList     Review[]
+  Orders          Order[]
 }
 
 model Respone {
@@ -64,6 +64,17 @@ model Order {
 
   respones   Respone[]
   categories Categorie[]
+
+  specializations Specialization[]
+}
+
+model Specialization {
+  id     Int     @id @default(autoincrement())
+  label  String
+
+  Order  Order[]
+
+  User   User[]
 }
 
 model Review {

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, HttpCode, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Prisma, User } from '@prisma/client';
-import { query } from 'express';
+import { Prisma } from '@prisma/client';
+import { ICreateUserData } from './auth.types';
 
 @Controller('auth')
 export class AuthController {
@@ -9,7 +9,9 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('register')
-  register(@Body() userData: Prisma.UserCreateInput) {
+  register(@Body() userData: ICreateUserData) {
+    console.log(userData);
+    
     return this.authService.register(userData);
   }
 
@@ -47,26 +49,5 @@ export class AuthController {
     return this.authService.getCategories();
   }
 
-  @Post('order')
-  async createOrder(
-    @Body()
-    orderData: {
-      description: string;
-      userTgId: string;
-      categories: string[];
-      price: number;
-    },
-  ) {
-    return this.authService.createOrder(orderData);
-  }
 
-  @Get('getOrdersList')
-  async getOrdersList(@Query() filters: { categories: string[] }) {
-    return this.authService.getAllOrders(filters);
-  }
-
-  @Get('orderById')
-  async getOrder(@Query() query: { id: string }) {
-    return this.authService.getOrderById(+query.id);
-  }
 }
