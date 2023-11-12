@@ -1,66 +1,80 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
+import { IOrder } from './order.types';
 
-interface IOrder {
-  description: string;
-  price: number;
-  userTgId: string;
-  categories: string[];
-}
+
 
 @Injectable()
 export class OrderService {
   constructor (private prisma: PrismaService) {}
 
   async createOrder(order: IOrder) {
-    const { description, categories, price, userTgId } = order;
+    const { description, categories, price, userTgId, specializations, title} = order;
 
-    const categoriesData: Prisma.CategorieWhereUniqueInput[] = [];
+    try {
 
-    if (categories) {
-      categories.forEach((catName) => {
-        const HaveCat = this.prisma.categorie.findUnique({
-          where: {
-            name: catName,
+      return this.prisma.order.create({
+        data: {
+          description: description,
+          title: title,
+          price: Number(price),
+          author: {
+            connect: {
+              telegramId: String(userTgId),
+            },
           },
-        });
+          categories: {
+            connect: categories
+          },
+          specializations: {
+            connect: specializations
+          }
+  
+      }});
 
-        if (!HaveCat) return;
+    } catch (error) {
+      console.log(error);
 
-        categoriesData.push({
-          name: catName,
-        });
+      throw new BadRequestException('Server err', {
+        description: error.message,
       });
+      
     }
 
-    return this.prisma.order.create({
-      data: {
-        description: description,
-        price: Number(price),
-        author: {
-          connect: {
-            telegramId: String(userTgId),
-          },
-        },
 
-        categories: {
-          connect: categoriesData,
-        },
-      },
-    });
   }
 
   async getOrderById(orderId: number) {
-    return this.prisma.order.findUnique({
-      where: {
-        id: orderId,
-      },
-      include: {
-        categories: true,
-        author: true,
-      },
-    });
+    
+    try {
+       const order = this.prisma.order.findUnique({
+        where: {
+          id: orderId,
+        },
+        include: {
+          categories: true,
+          author: true,
+          specializations: true,
+        },
+      });
+
+
+      if ( !order ) throw new BadRequestException('failed to create order');
+
+      return order
+
+    } catch (error) {
+
+      console.log(error);
+
+      throw new BadRequestException('Server err', {
+        description: error.message,
+      });
+      
+    }
+
+
   }
 
   async getAllOrders(filters: { categories: string[] }) {

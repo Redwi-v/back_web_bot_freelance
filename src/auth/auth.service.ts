@@ -41,7 +41,7 @@ export class AuthService {
       console.error(error);
 
       throw new BadRequestException('failed to create user', {
-        description: 'hello',
+        description: error.message,
       });
     }
   }

@@ -55,6 +55,7 @@ model Respone {
 
 model Order {
   id Int @id @default(autoincrement())
+  title String
 
   description String
   price       Int
@@ -64,7 +65,6 @@ model Order {
 
   respones   Respone[]
   categories Categorie[]
-
   specializations Specialization[]
 }
 

@@ -7,4 +7,4 @@ import { OrderService } from './order.service';
   controllers: [OrderController],
   providers: [OrderService, PrismaService],
 })
-export class AuthModule {}
+export class OrderModule {}

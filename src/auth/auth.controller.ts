@@ -11,7 +11,6 @@ export class AuthController {
   @HttpCode(200)
   @Post('register')
   register(@Body() userData: ICreateUserData) {
-    console.log(userData);
     
     return this.authService.register(userData);
   }
