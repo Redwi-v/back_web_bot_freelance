@@ -75,31 +75,36 @@ export class AppUpdate {
       //@ts-ignore
       telegramId,
     );
-    const file = await this.bot.telegram.getFile(
-      userProfilePhoto.photos[0][0].file_id,
-    );
+    
+    const getProfilePhoto =  async () => {
+      if(!userProfilePhoto.photos[0]) return null
 
-    const path = `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}`;
+      const file = await this.bot.telegram.getFile(userProfilePhoto.photos[0][0].file_id);
+      return file
+    }
+    const file = await getProfilePhoto()
 
-    // const newUserData: Prisma.UserCreateInput = {
-    //   telegramId: String(telegramId),
-    //   about: about || null,
-    //   age: age,
-    //   email: email,
-    //   name: name,
-    //   avatarUrl: path,
-    //   specialization: specialization || '',
-    //   activeRole: {
-    //     connect: {
-    //       index: roleIndex,
-    //     },
-    //   },
-    // };
+    const path = file ?  `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}` : null;
+
+    const newUserData: Prisma.UserCreateInput = {
+      telegramId: String(telegramId),
+      about: about || null,
+      age: age,
+      email: email,
+      name: name,
+      avatarUrl: path,
+      specialization: specialization || '',
+      activeRole: {
+        connect: {
+          index: roleIndex,
+        },
+      },
+    };
 
     
-    // const res = await this.auth.register(newUserData, categories || []);
+    const res = await this.auth.register(newUserData, categories || []);
 
-    // console.log(res);
+    console.log(res);
     
     ctx.reply(
       'Мы занесли вас в базу, теперь можете пользоваться приложением 🎉',

@@ -35,7 +35,7 @@ export class AuthService {
         });
       }
 
-      await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           ...userData,
           categories: {
@@ -44,6 +44,8 @@ export class AuthService {
           rate: 0,
         },
       });
+
+      return user
     } catch (error) {
       console.log(error);
     }
