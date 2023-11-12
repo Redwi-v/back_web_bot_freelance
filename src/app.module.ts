@@ -9,6 +9,7 @@ import { PrismaService } from './prisma.service';
 import { AuthService } from './auth/auth.service';
 import { UtilsModule } from './utils/utils.module';
 import { OrderModule } from './order/order.module';
+import { ResponseModule } from './response/response.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -23,7 +24,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     }),
     AuthModule,
     UtilsModule,
-    OrderModule
+    OrderModule,
+    ResponseModule
   ],
   providers: [AppService, AppUpdate, PrismaService, AuthService],
 })

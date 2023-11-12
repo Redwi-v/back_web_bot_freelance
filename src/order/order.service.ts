@@ -2,18 +2,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
 import { IOrder } from './order.types';
-
-
+import { IFreelanceFindParams, SortingValues } from 'src/auth/auth.types';
 
 @Injectable()
 export class OrderService {
-  constructor (private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
   async createOrder(order: IOrder) {
-    const { description, categories, price, userTgId, specializations, title} = order;
+    const { description, categories, price, userTgId, specializations, title } =
+      order;
 
     try {
-
       return this.prisma.order.create({
         data: {
           description: description,
@@ -25,30 +24,25 @@ export class OrderService {
             },
           },
           categories: {
-            connect: categories
+            connect: categories,
           },
           specializations: {
-            connect: specializations
-          }
-  
-      }});
-
+            connect: specializations,
+          },
+        },
+      });
     } catch (error) {
       console.log(error);
 
       throw new BadRequestException('Server err', {
         description: error.message,
       });
-      
     }
-
-
   }
 
   async getOrderById(orderId: number) {
-    
     try {
-       const order = this.prisma.order.findUnique({
+      const order = this.prisma.order.findUnique({
         where: {
           id: orderId,
         },
@@ -56,55 +50,187 @@ export class OrderService {
           categories: true,
           author: true,
           specializations: true,
+          executor: true,
+          responses: true,
         },
       });
 
+      if (!order) throw new BadRequestException('failed to create order');
 
-      if ( !order ) throw new BadRequestException('failed to create order');
-
-      return order
-
+      return order;
     } catch (error) {
-
       console.log(error);
 
       throw new BadRequestException('Server err', {
         description: error.message,
       });
-      
     }
-
-
   }
 
-  async getAllOrders(filters: { categories: string[] }) {
-    let prismaParams: Prisma.OrderFindManyArgs = {
-      where: {},
-      include: {
-        author: true,
-      },
-    };
-
-    if (filters.categories) {
-      const andParams: Prisma.CategorieWhereInput[] = [];
-
-      filters.categories.forEach((filterName) => {
-        andParams.push({
-          name: filterName,
-        });
-      });
-
-      prismaParams.where = {
-        ...prismaParams.where,
-
-        categories: {
-          some: {
-            OR: andParams,
-          },
+  async getAllOrders(params: IFreelanceFindParams) {
+    const {
+      categories,
+      maxPrice,
+      minPrice,
+      sorting,
+      specializations,
+      term,
+      sortType,
+    } = params;
+    try {
+      let findParams: Prisma.OrderFindManyArgs = {
+        where: {
+          status: 'inSearch',
         },
       };
-    }
 
-    return this.prisma.order.findMany(prismaParams);
+      if (categories) {
+        findParams.where = {
+          ...findParams.where,
+          categories: {
+            some: {
+              id: {
+                in: categories || [],
+              },
+            },
+          },
+        };
+      }
+
+      if (specializations) {
+        findParams.where = {
+          ...findParams.where,
+          specializations: {
+            some: {
+              id: {
+                in: specializations || [],
+              },
+            },
+          },
+        };
+      }
+
+      if (minPrice && maxPrice) {
+        findParams.where = {
+          ...findParams.where,
+
+          price: {
+            gte: minPrice,
+            lte: maxPrice,
+          },
+        };
+      }
+
+      if (
+        sorting === SortingValues.PRICE &&
+        sortType &&
+        (sortType === 'asc' || sortType === 'desc')
+      ) {
+        findParams = {
+          ...findParams,
+          orderBy: {
+            price: sortType,
+          },
+        };
+      }
+
+      if (
+        sorting === SortingValues.RATING &&
+        sortType &&
+        (sortType === 'asc' || sortType === 'desc')
+      ) {
+        findParams = {
+          ...findParams,
+          orderBy: {
+            author: {
+              rating: sortType,
+            },
+          },
+        };
+      }
+
+      if (term) {
+        findParams.where = {
+          ...findParams.where,
+          OR: [
+            {
+              title: {
+                contains: term,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: term,
+                mode: 'insensitive',
+              },
+            },
+          ],
+        };
+      }
+
+      return this.prisma.order.findMany({
+        ...findParams,
+        include: {
+          author: true,
+          categories: true,
+          executor: true,
+          responses: true,
+          specializations: true,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Server Err', {
+        description: error.message,
+      });
+    }
+  }
+
+  async archive(authorTgId: string | number, orderId: string | number) {
+    try {
+      
+      return this.prisma.order.update({
+        where: {
+          id: +orderId,
+          author: {
+            telegramId: String(authorTgId)
+          }
+        },
+        data: {
+          status: 'inArchive'
+        }
+      })
+
+    } catch (error) {
+      console.log(error);
+
+      throw new BadRequestException('Server err', {
+        description: error.message,
+      });
+    }
+  }
+  async unzip(authorTgId: string | number, orderId: string | number) {
+    try {
+      
+      return this.prisma.order.update({
+        where: {
+          id: +orderId,
+          author: {
+            telegramId: String(authorTgId)
+          }
+        },
+        data: {
+          status: 'inSearch'
+        }
+      })
+
+    } catch (error) {
+      console.log(error);
+
+      throw new BadRequestException('Server err', {
+        description: error.message,
+      });
+    }
   }
 }

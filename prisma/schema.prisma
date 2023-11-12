@@ -25,7 +25,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email     String @unique
+  email     String  @unique
   age       Int
   name      String
   about     String?
@@ -40,7 +40,8 @@ model User {
   specializations Specialization[]
   categories      Categorie[]
   reviewsList     Review[]
-  Orders          Order[]
+  Orders          Order[]          @relation("orders")
+  executedOrders  Order[]          @relation("executedOrders")
 }
 
 model Respone {
@@ -54,27 +55,36 @@ model Respone {
 }
 
 model Order {
-  id Int @id @default(autoincrement())
+  id    Int    @id @default(autoincrement())
   title String
+
+  // inSearch - atWork - inArchive - completed 
+  status String @default("inSearch")
 
   description String
   price       Int
 
-  author User @relation(fields: [userId], references: [id])
-  userId Int
+  author   User @relation(name: "orders", fields: [authorId], references: [id])
+  authorId Int
+  authorIsCloseOrder Boolean? @default(false)
 
-  respones   Respone[]
-  categories Categorie[]
+  executor   User? @relation(name: "executedOrders", fields: [executorId], references: [id])
+  executorId Int?
+  executorIsCloseOrder Boolean? @default(false)
+
+
+  responses        Respone[]
+  categories      Categorie[]
   specializations Specialization[]
-}
+} 
 
 model Specialization {
-  id     Int     @id @default(autoincrement())
-  label  String
+  id    Int    @id @default(autoincrement())
+  label String
 
-  Order  Order[]
+  Order Order[]
 
-  User   User[]
+  User User[]
 }
 
 model Review {
