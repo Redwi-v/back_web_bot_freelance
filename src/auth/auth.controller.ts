@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, HttpCode, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Prisma } from '@prisma/client';
-import { ICreateUserData } from './auth.types';
+import { ICreateUserData, IFreelanceQueryParams } from './auth.types';
+
 
 @Controller('auth')
 export class AuthController {
@@ -15,39 +16,49 @@ export class AuthController {
     return this.authService.register(userData);
   }
 
-  @Post('reg_many')
-  regMany(@Body() users: Prisma.UserCreateManyInput[]) {
-    return this.authService.registerMany(users);
-  }
-
-  @Get('freelancers')
-  getFreelancers(
-    @Query()
-    params: {
-      categories: string[];
-    },
-  ) {
-    return this.authService.getFreelance({
-      categories: params.categories,
-    });
-  }
-
   @Get('user')
   getUserById(@Query() query: { id: string }) {
     return this.authService.getUserById(query.id);
   }
 
+
+
   @Get('tgUser')
   async getUserByTgId(@Query() query: { id: string }) {
-    const data = await this.authService.getUserByTgId(query.id);
 
-    return data;
+    return this.authService.getUserByTgId(query.id);
+    
+  }
+
+
+  @Get('freelancers')
+  getFreelancers(@Query() {categories, maxPrice, minPrice, specializations, sorting, term , sortType}:IFreelanceQueryParams ) {
+
+   
+    const stringToArr = ( str: string | undefined ) : number[] | null => {
+
+      if ( !str ) return null
+      return str.split(',').map( num => +num )
+
+    }
+
+    const filtersParams = {
+      minPrice: minPrice ? +minPrice : null,
+      maxPrice: maxPrice ? +maxPrice : null,
+      categories: stringToArr(categories),
+      specializations: stringToArr(specializations),
+
+      sorting: sorting,
+      sortType: sortType === 'asc' || sortType === 'desc' ? sortType : null,
+      term: term,
+    }
+
+    return this.authService.getFreelance(filtersParams);
   }
 
   @Get('categories')
   async getCategories() {
     return this.authService.getCategories();
   }
-
 
 }

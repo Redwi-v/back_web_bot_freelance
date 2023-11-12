@@ -1,9 +1,11 @@
-import {  Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
-import { ICreateUserData } from './auth.types';
-
-
+import { ICreateUserData, IFreelanceFindParams, SortingValues } from './auth.types';
 
 @Injectable()
 export class AuthService {
@@ -19,100 +21,190 @@ export class AuthService {
           telegramId: userData.telegramId,
           about: userData.about,
 
-          activeRole:  {
+          activeRole: {
             connect: {
-              index:   userData.activeRoleIndex || 'customer'
-            }
+              index: userData.activeRoleIndex || 'customer',
+            },
           },
 
           avatarUrl: userData.avatarUrl,
 
           categories: {
-            connect: userData.categoriesIdentifiers || []
+            connect: userData.categoriesIdentifiers || [],
           },
           specializations: {
-            connect: userData.categoriesIdentifiers || []
-          }
-        }
-      })
-
+            connect: userData.categoriesIdentifiers || [],
+          },
+        },
+      });
     } catch (error) {
-      console.log(error);
+      console.error(error);
+
+      throw new BadRequestException('failed to create user', {
+        description: 'hello',
+      });
     }
   }
 
   async getUserById(id: number | string) {
-    const data = await this.prisma.user.findUnique({
-      where: {
-        id: +id,
-      },
-      include: {
-        categories: true,
-        activeRole: true,
-        Orders: true,
-        responses: true,
-        reviewsList: true,
-        specializations: true
-      },
-    });
-
-    return data;
-  }
-
-  async registerMany(users: Prisma.UserCreateManyInput[]) {}
-
-
-
-  async getUserByTgId(TgId: string) {
-    const data = await this.prisma.user.findUnique({
-      where: {
-        telegramId: String(TgId),
-      },
-      include: {
-        activeRole: true,
-        categories: true,
-        responses: true,
-        reviewsList: true,
-      },
-    });
-
-    return data;
-  }
-
-  async getFreelance(filters: { categories: string[] }) {
-    let prismaParams: Prisma.UserFindManyArgs = {
-      where: {
-        roleIndex: 'freelancer',
-      },
-    };
-
-    if (filters.categories) {
-      const andParams: Prisma.CategorieWhereInput[] = [];
-
-      filters.categories.forEach((filterName) => {
-        andParams.push({
-          name: filterName,
-        });
+    try {
+      const data = await this.prisma.user.findUnique({
+        where: { id: +id },
+        include: {
+          categories: true,
+          activeRole: true,
+          Orders: true,
+          responses: true,
+          reviewsList: true,
+          specializations: true,
+        },
       });
 
-      prismaParams.where = {
-        ...prismaParams.where,
+      if (!data) throw new NotFoundException('user not found');
 
-        categories: {
-          some: {
-            OR: andParams,
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Server err', {
+        description: error.message,
+      });
+    }
+  }
+
+  async getUserByTgId(TgId: string) {
+    try {
+      const data = await this.prisma.user.findUnique({
+        where: {
+          telegramId: String(TgId),
+        },
+        include: {
+          activeRole: true,
+          categories: true,
+          responses: true,
+          reviewsList: true,
+        },
+      });
+
+      if (!data) throw new NotFoundException('user not found');
+
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Server err', {
+        description: error.message,
+      });
+    }
+  }
+
+  async getFreelance(params: IFreelanceFindParams) {
+    const { categories, maxPrice, minPrice, sorting, specializations, term , sortType } = params;
+    try {
+
+
+      let findParams: Prisma.UserFindManyArgs = {
+        where: {
+          activeRole: {
+            index: 'freelancer',
           },
         },
       };
-    }
 
-    const data = await this.prisma.user.findMany(prismaParams);
-    return data;
+      if (categories) {
+        findParams.where = {
+          ...findParams.where,
+          categories: {
+            some: {
+              id: {
+                in: categories || [],
+              },
+            },
+          },
+        };
+      }
+
+      if (specializations) {
+        findParams.where = {
+          ...findParams.where,
+          specializations: {
+            some: {
+              id: {
+                in: specializations || [],
+              },
+            },
+          },
+        };
+      }
+
+      if (minPrice && maxPrice) {
+        findParams.where = {
+          ...findParams.where,
+         
+          rate: {
+            gte: minPrice,
+            lte: maxPrice
+          }
+        };
+      }
+   
+      if (sorting === SortingValues.PRICE && sortType && (sortType === 'asc' || sortType === 'desc')) {
+        findParams = {
+          ...findParams,
+          orderBy: {
+            rate: sortType
+          }
+        }
+      }
+
+      if (sorting === SortingValues.RATING && sortType && (sortType === 'asc' || sortType === 'desc')) {
+        findParams = {
+          ...findParams,
+          orderBy: {
+            rating: sortType
+          }
+        }
+      }
+
+      if(term) {
+        findParams.where = {
+          ...findParams.where,
+          OR: [
+            {
+              name: {
+                contains: term,
+                mode: 'insensitive'
+              }
+            },
+            {
+              about: {
+                contains: term,
+                mode: 'insensitive'
+              }
+            }
+          ]
+        }
+      }
+
+      
+      
+      return this.prisma.user.findMany({
+        ...findParams,
+    
+
+        include: {
+          categories: true,
+          specializations: true
+        },
+      });
+
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Server Err', {
+        description: error.message,
+      });
+    }
   }
 
   async getCategories() {
     return this.prisma.categorie.findMany({});
   }
-
-
 }

@@ -78,7 +78,7 @@ const main = async () => {
     ],
   });
 
-  await prisma.specialization.createMany({
+  await prisma.specialization.createMany({  
     data: specializations,
   });
 
