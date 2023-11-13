@@ -9,7 +9,7 @@ export interface BotContext extends Context {
     name: string;
     age: number;
     email: string;
-    specialization: string;
+    specialization: [{id: number}];
     about?: string;
     categories?: string[];
   };

@@ -33,7 +33,7 @@ export class AuthService {
             connect: userData.categoriesIdentifiers || [],
           },
           specializations: {
-            connect: userData.categoriesIdentifiers || [],
+            connect: userData.specializationIdentifiers || [],
           },
         },
       });
@@ -206,5 +206,18 @@ export class AuthService {
 
   async getCategories() {
     return this.prisma.categorie.findMany({});
+  }
+
+  async getOrdersInWork(useTgId: string) {
+    return this.prisma.order.findMany({
+      where: {
+        executor: {
+          telegramId: useTgId
+        }
+      }
+    })
+  }
+  async getSpecializations() {
+    return this.prisma.specialization.findMany()
   }
 }

@@ -10,6 +10,7 @@ import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
 import { Get } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
+import { ICreateUserData } from './auth/auth.types';
 
 const getUserId = (message: any): Prisma.UserCreateInput => {
   if (message.reply_to_message) {
@@ -69,38 +70,44 @@ export class AppUpdate {
     const about = ctx.session.about;
     const categories = ctx.session.categories;
 
+    console.log(name, email, roleIndex, age, specialization, about, categories);
+
     const telegramId = getUserId(ctx.message);
 
     const userProfilePhoto = await this.bot.telegram.getUserProfilePhotos(
       //@ts-ignore
       telegramId,
     );
-    const file = await this.bot.telegram.getFile(
-      userProfilePhoto.photos[0][0].file_id,
-    );
+    let file: any = null;
 
-    const path = `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}`;
+    if (userProfilePhoto.photos[0]) {
+      file = await this.bot.telegram.getFile(
+        userProfilePhoto.photos[0][0].file_id,
+      );
+    }
 
-    // const newUserData: Prisma.UserCreateInput = {
-    //   telegramId: String(telegramId),
-    //   about: about || null,
-    //   age: age,
-    //   email: email,
-    //   name: name,
-    //   avatarUrl: path,
-    //   specialization: specialization || '',
-    //   activeRole: {
-    //     connect: {
-    //       index: roleIndex,
-    //     },
-    //   },
-    // };
+    const path = file ? `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}`: '';
 
-    
-    // const res = await this.auth.register(newUserData, categories || []);
+    const newUserData: ICreateUserData = {
+      telegramId: String(telegramId),
+      about: about || null,
+      age: age,
+      email: email,
+      name: name,
+      avatarUrl: path,
+      specializationIdentifiers: specialization,
+
+      activeRoleIndex: roleIndex,
+
+      categoriesIdentifiers: [{ id: 1 }],
+    };
+
+    console.log(newUserData);
+
+    const res = await this.auth.register(newUserData);
 
     // console.log(res);
-    
+
     ctx.reply(
       'Мы занесли вас в базу, теперь можете пользоваться приложением 🎉',
       Markup.inlineKeyboard([
@@ -145,11 +152,11 @@ export class AppUpdate {
               Markup.keyboard([
                 Markup.button.callback('Инфографика', 'designer'),
                 Markup.button.callback('SEO', 'content_manager'),
-                Markup.button.callback('Менеджеры','account_manager'),
-                     Markup.button.callback('Сертификации/декларации','dfkdkfj'),
-                     Markup.button.callback('Бухгалтерия','dfjdklfjk'),
-                     Markup.button.callback('Фотографы','photo'),
-                     Markup.button.callback('Обучение','work'),
+                Markup.button.callback('Менеджеры', 'account_manager'),
+                Markup.button.callback('Сертификации/декларации', 'dfkdkfj'),
+                Markup.button.callback('Бухгалтерия', 'dfjdklfjk'),
+                Markup.button.callback('Фотографы', 'photo'),
+                Markup.button.callback('Обучение', 'work'),
               ]),
             );
           }

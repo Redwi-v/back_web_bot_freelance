@@ -19,6 +19,16 @@ export class OrderController {
     return this.orderService.getOrderById(+query.id);
   }
 
+  @Get('inArchive')
+  getAllInArchive(@Query() query: {userTgId: string}) {
+    return this.orderService.getAllArchiveOrdersByTgId(query.userTgId)
+  }
+
+  @Get('userOrders')
+  getUserOrders(@Query() query: {userTgId: string}) {
+    return this.orderService.getAllOrdersByTgId(query.userTgId)
+  }
+
   @Put('inArchive')
   InArchive(
     @Body() body: { authorTgId: string | number; orderId: string | number },
@@ -64,5 +74,11 @@ export class OrderController {
     };
 
     return this.orderService.getAllOrders(filtersParams);
+  }
+
+
+  @Put('closeOrder')
+  closeOrder (@Body() body : {userTgId: string, orderId: string}) {
+    return this.orderService.closeOrder(body.userTgId, body.orderId)
   }
 }

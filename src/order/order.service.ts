@@ -51,7 +51,11 @@ export class OrderService {
           author: true,
           specializations: true,
           executor: true,
-          responses: true,
+          responses: {
+            include: {
+              User: true,
+            },
+          },
         },
       });
 
@@ -189,19 +193,17 @@ export class OrderService {
 
   async archive(authorTgId: string | number, orderId: string | number) {
     try {
-      
       return this.prisma.order.update({
         where: {
           id: +orderId,
           author: {
-            telegramId: String(authorTgId)
-          }
+            telegramId: String(authorTgId),
+          },
         },
         data: {
-          status: 'inArchive'
-        }
-      })
-
+          status: 'inArchive',
+        },
+      });
     } catch (error) {
       console.log(error);
 
@@ -212,19 +214,17 @@ export class OrderService {
   }
   async unzip(authorTgId: string | number, orderId: string | number) {
     try {
-      
       return this.prisma.order.update({
         where: {
           id: +orderId,
           author: {
-            telegramId: String(authorTgId)
-          }
+            telegramId: String(authorTgId),
+          },
         },
         data: {
-          status: 'inSearch'
-        }
-      })
-
+          status: 'inSearch',
+        },
+      });
     } catch (error) {
       console.log(error);
 
@@ -232,5 +232,83 @@ export class OrderService {
         description: error.message,
       });
     }
+  }
+
+  async getAllOrdersByTgId(userTgId: string) {
+    try {
+      return this.prisma.order.findMany({
+        where: {
+          author: {
+            telegramId: userTgId,
+          },
+          status: {
+            not: 'inArchive'
+          }
+        },
+        include: {
+          responses: true
+        }
+      });
+    } catch (error) {
+      console.log(error);
+
+      throw new BadRequestException('Server err', {
+        description: error.message,
+      });
+    }
+  }
+
+  async getAllArchiveOrdersByTgId(userTgId: string) {
+    try {
+      return this.prisma.order.findMany({
+        where: {
+          author: {
+            telegramId: userTgId,
+          },
+          status: 'inArchive',
+        },
+      });
+    } catch (error) {
+      console.log(error);
+
+      throw new BadRequestException('Server err', {
+        description: error.message,
+      });
+    }
+  }
+  
+  async closeOrder (userTgId: string, orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id: +orderId
+      },
+      include: {
+        executor: true,
+        author: true
+      }
+    })
+
+    if(order?.executor?.telegramId === userTgId) {
+      return this.prisma.order.update({
+        where: {
+          id: +orderId
+        },
+        data: {
+          executorIsCloseOrder: true,
+          status: order.authorIsCloseOrder ? 'completed' : 'inWork'
+        }
+      })
+    }else {
+      return this.prisma.order.update({
+        where: {
+          id: +orderId
+        },
+        data: {
+          authorIsCloseOrder: true,
+          status: order?.executorIsCloseOrder ? 'completed' : 'inWork'
+        }
+      })
+    }
+
   }
 }

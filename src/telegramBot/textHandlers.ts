@@ -174,18 +174,14 @@ const textHandler = {
     if (!messageText) return botErrHandler.incorrectMessage(ctx);
     let specialization = '';
 
-    if (messageText.toLocaleLowerCase() === 'я контент-менеджер') {
-      specialization = 'content_manager';
-    }
-    if (messageText.toLocaleLowerCase() === 'инфографика') {
-      specialization = 'designer';
-    }
-    if (messageText.toLocaleLowerCase() === 'я менеджер аккаунтов') {
-      specialization = 'account_manager';
-    }
-
+    const spc = await prisma.specialization.findUnique({
+      where: {
+        label: messageText
+      }
+    })
+   
     console.log(specialization)
-    ctx.session.specialization = specialization || 'next';
+    ctx.session.specialization = [{id: spc?.id || 1}];
     console.log(ctx.session.specialization )
     endCallBack(ctx, specialization);
   },

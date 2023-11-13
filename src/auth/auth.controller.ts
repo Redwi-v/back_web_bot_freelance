@@ -60,4 +60,14 @@ export class AuthController {
     return this.authService.getCategories();
   }
 
+
+  @Get('ordersInWork')
+  async getMyOrders(@Query() query : {useIdTg: string}) {
+    return this.authService.getOrdersInWork(query.useIdTg)
+  }
+
+  @Get('specializations')
+  async getSpecializations() {
+    return this.authService.getSpecializations()
+  }
 }
