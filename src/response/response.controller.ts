@@ -17,6 +17,7 @@ export class ResponseController {
   @Post('chooseExecuter')
   async chooseExecuter (@Body() params: {responseId: string, orderId: string, }) {
 
+  console.log(params);
   
     
     return this.responseService.chooseResponse(params)

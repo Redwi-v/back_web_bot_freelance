@@ -246,7 +246,11 @@ export class OrderService {
           }
         },
         include: {
-          responses: true
+          responses: {
+            include: {
+              User: true
+            }
+          }
         }
       });
     } catch (error) {

@@ -62,12 +62,17 @@ export class AuthController {
 
 
   @Get('ordersInWork')
-  async getMyOrders(@Query() query : {useIdTg: string}) {
-    return this.authService.getOrdersInWork(query.useIdTg)
+  async getMyOrders(@Query() query : {userIdTg: string}) {
+    return this.authService.getOrdersInWork(query.userIdTg)
   }
 
   @Get('specializations')
   async getSpecializations() {
     return this.authService.getSpecializations()
+  }
+
+  @Get('completedOrders')
+  async getCompletedOrders (@Query() query : {userIdTg: string}) {
+    return this.authService.getCompletedOrders(query.userIdTg)
   }
 }

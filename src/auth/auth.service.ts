@@ -211,13 +211,28 @@ export class AuthService {
   async getOrdersInWork(useTgId: string) {
     return this.prisma.order.findMany({
       where: {
+        status: 'inWork',
         executor: {
           telegramId: useTgId
         }
       }
     })
   }
+
+  async getCompletedOrders(useTgId: string) {
+    return this.prisma.order.findMany({
+      where: {
+        status: 'completed',
+        executor: {
+          telegramId: useTgId
+        }
+      }
+    })
+  }
+
   async getSpecializations() {
     return this.prisma.specialization.findMany()
   }
+
+  a
 }
