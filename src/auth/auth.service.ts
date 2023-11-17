@@ -20,6 +20,7 @@ export class AuthService {
           name: userData.name,
           telegramId: userData.telegramId,
           about: userData.about,
+          telegramLink: userData.telegramLink,
 
           activeRole: {
             connect: {
@@ -215,6 +216,9 @@ export class AuthService {
         executor: {
           telegramId: useTgId
         }
+      },
+      include: {
+        author: true
       }
     })
   }
@@ -234,5 +238,18 @@ export class AuthService {
     return this.prisma.specialization.findMany()
   }
 
-  a
+  async getAuthorConnects (params: {telegramId: string}) {
+    return this.prisma.order.findMany({
+      where: {
+        author: {
+          telegramId: params.telegramId
+        },
+        status: 'inWork'
+      },
+      include: {
+        executor: true
+      }
+    })
+  }
+
 }

@@ -1,35 +1,41 @@
 {
   "sessions": [
     {
-      "id": "6550263737:6550263737",
-      "data": {
-        "__scenes": {},
-        "type": "regFreelancerSteps",
-        "step": 5,
-        "role": "freelancer",
-        "specialization": [
-          {
-            "id": 1
-          }
-        ],
-        "name": "Shampur",
-        "email": "Hdhd@gm.com",
-        "age": 19,
-        "about": "Djdhdhdhd djdjdh djdjdjd djdidjd djdiehdbd fjfirgwvd fifuevhridbd djdhsgdhd djfiehdv r fjdidhdbd dkdidhd d djduehve djdjdvebr fjd",
-        "categories": []
-      }
-    },
-    {
       "id": "1607689868:1607689868",
       "data": {
         "__scenes": {},
         "type": "regCustomerSteps",
         "step": 3,
         "role": "customer",
+        "specialization": [
+          {
+            "id": 2
+          }
+        ],
         "name": "Андрей",
-        "email": "DgDJ@gmail.com",
-        "age": 18,
+        "email": "Djfhh@hd.com",
+        "age": 55,
+        "about": "Ruhdhdhdudhsbd xhdhdhdh ddjjdjdjd dhdjdudhd djdjdjdbdbd djdjdujdhd djdjdudhrbdhd dndbdhd djdhdhdh dhdjdhhd dhdjhd djdjdb dhdhdhd djdud djfjfhd dbdjdbd dhdhfhd",
         "categories": []
+      }
+    },
+    {
+      "id": "6550263737:6550263737",
+      "data": {
+        "__scenes": {},
+        "type": "regFreelancerSteps",
+        "step": 5,
+        "role": "freelancer",
+        "name": "Shampur",
+        "email": "Dhdhdb@dhdb.com",
+        "age": 55,
+        "categories": [],
+        "specialization": [
+          {
+            "id": 2
+          }
+        ],
+        "about": "Hdhdhdhd djxjdhdhs sjxjdhdhd djdjdjd djxjdhffbr dndjdhrvd djxjdhs djdjdhdhd djdjdhr dbxjgfhd djxjdhd djdjdjdjebf fjfjd d djdjbe djd"
       }
     }
   ]

@@ -74,6 +74,12 @@ const textHandler = {
     if (messageText.toLocaleLowerCase() === 'далее') {
       return endCallBack(ctx);
     }
+    if (messageText.toLocaleLowerCase() === 'все') {
+      const allCategories = await prisma.categorie.findMany({})
+      ctx.session.categories = allCategories.map(cat => cat.name)
+      console.log(ctx.session.categories);
+      return endCallBack(ctx);
+    }
 
     let isInclude = false;
     if (!ctx.session.categories?.length) {
@@ -101,6 +107,7 @@ const textHandler = {
     const categories = await prisma.categorie.findMany();
 
     const keyboard = Markup.keyboard([
+      Markup.button.callback('Все', 'all'),
       ...categories.map((cat) => {
         return Markup.button.callback(cat.name, cat.name);
       }),
@@ -173,6 +180,9 @@ const textHandler = {
 
     if (!messageText) return botErrHandler.incorrectMessage(ctx);
     let specialization = '';
+    
+    console.log(messageText.toLocaleLowerCase());
+    
 
     const spc = await prisma.specialization.findUnique({
       where: {
@@ -180,10 +190,14 @@ const textHandler = {
       }
     })
    
-    console.log(specialization)
+    console.log('no');
+    console.log(spc);
+    console.log(specialization);
+    
+    
     ctx.session.specialization = [{id: spc?.id || 1}];
     console.log(ctx.session.specialization )
-    endCallBack(ctx, specialization);
+    endCallBack(ctx, spc?.label || '');
   },
 
   // AGE

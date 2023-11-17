@@ -76,11 +76,12 @@ export const steps = {
       endCallBack: async (ctx: BotContext) => {
         const categories = await prisma.categorie.findMany();
 
-        const keyboard = Markup.keyboard(
-          categories.map((cat) => {
+        const keyboard = Markup.keyboard([
+          Markup.button.callback('Все', 'all'),
+          ...categories.map((cat) => {
             return Markup.button.callback(cat.name, cat.name);
           }),
-        );
+        ]);
 
         keyboard.reply_markup.resize_keyboard = true;
 

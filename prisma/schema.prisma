@@ -19,6 +19,8 @@ model User {
   id         Int    @id @default(autoincrement())
   telegramId String @unique
 
+  telegramLink String
+
   activeRole Role?   @relation(fields: [roleIndex], references: [index])
   roleIndex  String
 

@@ -75,4 +75,11 @@ export class AuthController {
   async getCompletedOrders (@Query() query : {userIdTg: string}) {
     return this.authService.getCompletedOrders(query.userIdTg)
   }
+
+  @Get('authorConnects')
+  async getAuthorConnects (@Query() query : {userIdTg: string}) {
+    return this.authService.getAuthorConnects({telegramId: query.userIdTg})
+  }
+
+
 }

@@ -70,7 +70,15 @@ export class AppUpdate {
     const about = ctx.session.about;
     const categories = ctx.session.categories;
 
-    console.log(name, email, roleIndex, age, specialization, about, categories);
+    const allActiveCategories = await this.prisma.categorie.findMany({
+      where: {
+        name: {
+          in: categories
+        }
+      }
+    })
+    console.log(allActiveCategories);
+    
 
     const telegramId = getUserId(ctx.message);
 
@@ -86,8 +94,13 @@ export class AppUpdate {
       );
     }
 
-    const path = file ? `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}`: '';
+    const path = file
+      ? `https://api.telegram.org/file/bot6579823661:AAElFdUNeI-XWx3UGAUr6eA48agqjeloWFQ/${file.file_path}`
+      : '';
 
+
+      console.log(ctx.message?.from);
+      
     const newUserData: ICreateUserData = {
       telegramId: String(telegramId),
       about: about || null,
@@ -96,10 +109,11 @@ export class AppUpdate {
       name: name,
       avatarUrl: path,
       specializationIdentifiers: specialization,
+      telegramLink: 'https://t.me/' + ctx.message?.from.username,
 
       activeRoleIndex: roleIndex,
 
-      categoriesIdentifiers: [{ id: 1 }],
+      categoriesIdentifiers: allActiveCategories,
     };
 
     console.log(newUserData);
@@ -111,10 +125,7 @@ export class AppUpdate {
     ctx.reply(
       'Мы занесли вас в базу, теперь можете пользоваться приложением 🎉',
       Markup.inlineKeyboard([
-        Markup.button.webApp(
-          'Открыть бота',
-          'https://test-d681d.web.app',
-        ),
+        Markup.button.webApp('Открыть бота', 'https://test-d681d.web.app'),
       ]),
     );
     ctx.session.categories = [];
@@ -166,11 +177,11 @@ export class AppUpdate {
       }
 
       if (ctx.session.type === 'chooseSpecialization') {
+        console.log(ctx.session.type);
         textHandler[Sessions.REGISTRATION_SPECIALIZATION](
           ctx,
           (ctx, specialization) => {
-            console.log(specialization);
-            if (specialization === 'designer') {
+            if (specialization === 'Инфографика') {
               ctx.session.type = 'promoCode';
 
               const key = Markup.keyboard([

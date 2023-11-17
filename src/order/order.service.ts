@@ -315,4 +315,15 @@ export class OrderService {
     }
 
   }
+
+  async getExecuterClosedOrders (userTgId: string) {
+    return this.prisma.order.findMany({
+      where: {
+        executor: {
+          telegramId: userTgId
+        },
+        status: 'compli'
+      }
+    })
+  }
 }
