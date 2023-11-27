@@ -1,9 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { ConnectsService } from 'src/connects/connects.service';
+import { OrderService } from 'src/order/order.service';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class ResponseService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private connect : ConnectsService,
+    private order : OrderService
+  ) {}
 
   async create(params: { text: string; authorTgId: string; orderId: string }) {
     try {
@@ -18,10 +25,10 @@ export class ResponseService {
         },
       });
 
-
       if (userWidthResponse)
-        throw new BadRequestException('you have already responded to the order');
-
+        throw new BadRequestException(
+          'you have already responded to the order',
+        );
 
       const response = await this.prisma.response.create({
         data: {
@@ -48,34 +55,38 @@ export class ResponseService {
     }
   }
 
-
-  async chooseResponse (params: {responseId: string, orderId: string, }) {
-    
+  async chooseResponse(params: { responseId: string; orderId: string }) {
     const response = await this.prisma.response.findUnique({
       where: {
-        id: +params.responseId
-      }
-    })
-
-     
+        id: +params.responseId,
+      },
+    });
 
     const order = await this.prisma.order.update({
       where: {
-        id: response?.orderId
+        id: response?.orderId,
       },
-      data : {
+      data: {
         executor: {
           connect: {
-            id: response?.userId
-          }
+            id: response?.userId,
+          },
         },
-        status: 'inWork'
-      }
-    })
-
-   return order
+        status: 'inWork',
+      },
+      include: {
+        executor: true,
+        author: true,
+      },
+    });
     
     
+    if (!order || !order.executor) return;     
 
+     await this.connect.create(order);
+     await this.order.closeOrder(order.author.telegramId, String(order.id))
+     await this.order.closeOrder(order.executor.telegramId, String(order.id))
+
+    return order;
   }
 }

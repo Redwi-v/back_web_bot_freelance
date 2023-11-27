@@ -10,6 +10,7 @@ import { AuthService } from './auth/auth.service';
 import { UtilsModule } from './utils/utils.module';
 import { OrderModule } from './order/order.module';
 import { ResponseModule } from './response/response.module';
+import { ConnectsModule } from './connects/connects.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -25,7 +26,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     AuthModule,
     UtilsModule,
     OrderModule,
-    ResponseModule
+    ResponseModule,
+    ConnectsModule
   ],
   providers: [AppService, AppUpdate, PrismaService, AuthService],
 })

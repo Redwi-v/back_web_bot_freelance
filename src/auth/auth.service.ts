@@ -56,7 +56,11 @@ export class AuthService {
           activeRole: true,
           Orders: true,
           responses: true,
-          reviewsList: true,
+          reviewsList: {
+            include: {
+              Author: true
+            }
+          },
           specializations: true,
         },
       });
@@ -82,7 +86,17 @@ export class AuthService {
           activeRole: true,
           categories: true,
           responses: true,
-          reviewsList: true,
+          reviewsList: {
+            include: {
+              Author: true
+            }
+          },
+          reviewsListAuthor: {
+            include: {
+              Author: true
+            }
+          },
+          Connects: true,
         },
       });
 

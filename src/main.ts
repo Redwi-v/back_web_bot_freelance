@@ -6,7 +6,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: ["https://test-d681d.web.app/", "https://0d6b-5-142-79-206.ngrok-free.app"],
+    origin: ["https://test-d681d.web.app/", "https://4e95-5-142-79-206.ngrok-free.app"],
     credentials: true,
   });
   await app.listen(process.env.APP_PORT || 4000);

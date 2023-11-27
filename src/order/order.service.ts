@@ -114,12 +114,21 @@ export class OrderService {
         };
       }
 
-      if (minPrice && maxPrice) {
+      if (minPrice) {
         findParams.where = {
           ...findParams.where,
 
           price: {
             gte: minPrice,
+          },
+        };
+      }
+
+      if(maxPrice) {
+        findParams.where = {
+          ...findParams.where,
+
+          price: {
             lte: maxPrice,
           },
         };
