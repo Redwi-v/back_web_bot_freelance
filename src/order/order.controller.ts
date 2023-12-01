@@ -73,7 +73,6 @@ export class OrderController {
       term: term,
     };
 
-    console.log(filtersParams.minPrice);
     
     return this.orderService.getAllOrders(filtersParams);
   }

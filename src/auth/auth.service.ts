@@ -266,4 +266,34 @@ export class AuthService {
     })
   }
 
+  async updateProfile (telegramId: string, data: IProfileUpdateData) {
+    try {
+      
+      const updatedParams: Prisma.UserUpdateInput = {}
+
+
+      if(data.avatarUrl) {
+        updatedParams.avatarUrl = data.avatarUrl
+      }
+
+      console.log(updatedParams);
+      
+      const res = await this.prisma.user.update({
+        where: {
+          telegramId
+        },
+        data: {
+          ...updatedParams,
+        }
+      })
+
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+}
+
+interface IProfileUpdateData {
+  avatarUrl?: string
 }

@@ -134,3 +134,9 @@ model Categorie {
   User  User[]
   Order Order[]
 }
+
+model File {
+  fileName String @unique
+  path String
+  originalname String
+}

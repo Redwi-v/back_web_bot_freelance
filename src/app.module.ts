@@ -11,6 +11,10 @@ import { UtilsModule } from './utils/utils.module';
 import { OrderModule } from './order/order.module';
 import { ResponseModule } from './response/response.module';
 import { ConnectsModule } from './connects/connects.module';
+import { FilesModule } from './files/files.module';
+
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -19,6 +23,7 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
     TelegrafModule.forRoot({
       middlewares: [sessions.middleware()],
       token: process.env.BOT_TOKEN || '',
@@ -27,7 +32,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     UtilsModule,
     OrderModule,
     ResponseModule,
-    ConnectsModule
+    ConnectsModule,
+    FilesModule
   ],
   providers: [AppService, AppUpdate, PrismaService, AuthService],
 })
