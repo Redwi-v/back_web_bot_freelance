@@ -36,7 +36,23 @@ export class FilesService {
       },
       where: {
         telegramId: data.telegramId
-      }
+      },
+      include: {
+        activeRole: true,
+        categories: true,
+        responses: true,
+        reviewsList: {
+          include: {
+            Author: true
+          }
+        },
+        reviewsListAuthor: {
+          include: {
+            Author: true
+          }
+        },
+        Connects: true,
+      },
     })
     
 
