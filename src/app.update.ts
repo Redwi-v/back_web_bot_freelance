@@ -209,7 +209,8 @@ export class AppUpdate {
               ]);
 
               key.reply_markup.resize_keyboard = true;
-
+              key.reply_markup.one_time_keyboard = true
+              
               ctx.reply(
                 generateTextFromArr([
                   `Я определил Ваше имя как ${userName}`,
