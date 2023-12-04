@@ -145,9 +145,11 @@ export class AppUpdate {
 
             const key = Markup.keyboard([
               Markup.button.callback('Оставить так', 'leave_a_name'),
+
             ]);
 
             key.reply_markup.resize_keyboard = true;
+            key.reply_markup.one_time_keyboard = true
 
             ctx.reply(
               generateTextFromArr([
