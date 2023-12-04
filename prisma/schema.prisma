@@ -49,6 +49,8 @@ model User {
   executedOrders Order[]   @relation("executedOrders")
   Connects       Connect[] @relation("connects")
   youjoined      Connect[] @relation("youJoined")
+
+  portfolio Project[]
 }
 
 model Connect {
@@ -124,19 +126,38 @@ model Review {
   Author   User @relation(name: "Author", fields: [authorId], references: [id])
 
   connect   Connect @relation(fields: [connectId], references: [id])
-  connectId Int @unique
+  connectId Int     @unique
 }
 
 model Categorie {
   id   Int    @id @default(autoincrement())
   name String @unique
 
-  User  User[]
-  Order Order[]
+  User      User[]
+  Order     Order[]
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId Int?
+}
+
+model Project {
+  id Int @id @default(autoincrement())
+
+  title       String
+
+  description String
+  categories  Categorie[]
+
+  images File[]
+
+  User   User?  @relation(fields: [userId], references: [id])
+  userId Int?
 }
 
 model File {
-  fileName String @unique
-  path String
+  fileName     String @unique @id
+  path         String
   originalname String
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId Int?
 }

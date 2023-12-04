@@ -6,6 +6,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { ICreateUserData, IFreelanceFindParams, SortingValues } from './auth.types';
+import { fileStorage } from 'src/files/storage';
 
 @Injectable()
 export class AuthService {
@@ -273,6 +274,8 @@ export class AuthService {
 
 
       if(data.avatarUrl) {
+        // fileStorage()
+
         updatedParams.avatarUrl = data.avatarUrl
       }
 

@@ -15,6 +15,7 @@ import { FilesModule } from './files/files.module';
 
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ProjectModule } from './project/project.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -33,7 +34,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     OrderModule,
     ResponseModule,
     ConnectsModule,
-    FilesModule
+    FilesModule,
+    ProjectModule
   ],
   providers: [AppService, AppUpdate, PrismaService, AuthService],
 })
