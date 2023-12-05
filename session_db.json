@@ -3,7 +3,16 @@
     {
       "id": "1607689868:1607689868",
       "data": {
-        "__scenes": {}
+        "__scenes": {},
+        "type": "regFreelancerSteps",
+        "step": 1,
+        "role": "freelancer",
+        "name": "Андрей",
+        "specialization": [
+          {
+            "id": 2
+          }
+        ]
       }
     }
   ]

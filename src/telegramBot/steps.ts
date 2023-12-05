@@ -13,7 +13,9 @@ export const steps = {
     {
       handler: textHandler[Sessions.REGISTRATION_NAME],
       endCallBack: (ctx: BotContext) => {
-        ctx.reply('Введите Email:');
+        const key = Markup.removeKeyboard()
+        ctx.reply('Введите Email:', key);
+
       },
     },
     {
@@ -47,7 +49,8 @@ export const steps = {
     {
       handler: textHandler[Sessions.REGISTRATION_NAME],
       endCallBack: (ctx: BotContext) => {
-        ctx.reply('Введите Email:');
+        const key = Markup.removeKeyboard()
+        ctx.reply('Введите Email:', key);
       },
     },
     {
