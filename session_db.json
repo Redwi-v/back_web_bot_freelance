@@ -4,8 +4,8 @@
       "id": "1607689868:1607689868",
       "data": {
         "__scenes": {},
-        "type": "regFreelancerSteps",
-        "step": 1,
+        "type": "chooseRole",
+        "step": 0,
         "role": "freelancer",
         "name": "Андрей",
         "specialization": [
@@ -13,6 +13,12 @@
             "id": 2
           }
         ]
+      }
+    },
+    {
+      "id": "6550263737:6550263737",
+      "data": {
+        "__scenes": {}
       }
     }
   ]
