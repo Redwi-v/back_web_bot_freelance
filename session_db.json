@@ -4,21 +4,32 @@
       "id": "1607689868:1607689868",
       "data": {
         "__scenes": {},
-        "type": "chooseRole",
-        "step": 0,
+        "type": "regFreelancerSteps",
+        "step": 5,
         "role": "freelancer",
         "name": "Андрей",
         "specialization": [
           {
             "id": 2
           }
-        ]
+        ],
+        "email": "Dhdhh@gm.com",
+        "age": 20,
+        "about": "Xjjxjd djdjdjd fjfjdud djdjdud fnfjdif fjdjdud fjtirir ffjitid ejdjfjf gjfisks djdudjd djfjfjfud djdjdur rjdjdud djdjfjf djdjdhr djdjd fjdjf djdjjd djdjdjd djdhd djdjd dhdjd",
+        "categories": []
       }
     },
     {
       "id": "6550263737:6550263737",
       "data": {
-        "__scenes": {}
+        "__scenes": {},
+        "type": "regCustomerSteps",
+        "step": 3,
+        "role": "customer",
+        "name": "Shampur",
+        "email": "Hello@gm.com",
+        "age": 19,
+        "categories": []
       }
     }
   ]

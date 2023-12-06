@@ -30,7 +30,7 @@ export const steps = {
         ctx.reply(
           `${ctx.session.name} , пожалуйста проверьте свои данные: 
           Email: ${ctx.session.email};
-          Роль: ${ctx.session.role};
+          Роль: ${ctx.session.role === 'customer' ? 'Заказчик' : 'Фрилансер'};
           Возраст: ${ctx.session.age};
           `,
           (() => {
@@ -100,9 +100,9 @@ export const steps = {
         ctx.reply(
           `${ctx.session.name} , пожалуйста проверьте свои данные: 
           Email: ${ctx.session.email};
-          Роль: ${ctx.session.role};
+          Роль: ${ctx.session.role === 'customer' ? 'Заказчик' : 'Фрилансер' };
           Возраст: ${ctx.session.age};
-          Категории: ${ctx.session.categories?.join('|')};
+          Категории: ${ctx.session.categories?.join(' | ')};
           `,
           (() => {
             const key = Markup.keyboard([
