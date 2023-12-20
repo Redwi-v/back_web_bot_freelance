@@ -21,11 +21,11 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document);
 
   app.enableCors({
-    origin: ["https://test-d681d.web.app/", "https://4d4d-5-142-42-90.ngrok-free.app"],
+    origin: ["https://test-d681d.web.app/", "https://4d4d-5-142-42-90.ngrok-free.app/"],
     credentials: true,
   }); 
           
-  await app.listen(process.env.APP_PORT || 80);
+  await app.listen(process.env.APP_PORT || 4000);
 }
 
 bootstrap();
