@@ -34,6 +34,8 @@ model User {
   lastName  String?
   avatarUrl String?
 
+  lastVisitTime  DateTime?
+
   rating Float @default(0)
   rate   Int?
 
@@ -64,6 +66,8 @@ model Connect {
 
   order   Order @relation(fields: [orderId], references: [id])
   orderId Int
+
+  isChecked Boolean @default(false)
 
   Review Review?
 }
@@ -136,7 +140,6 @@ model Categorie {
   User      User[]
   Order     Order[]
   project   Project[]
-  projectId Int?
 }
 
 model Project {

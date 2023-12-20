@@ -15,6 +15,7 @@ interface IFreelanceQueryParams  {
   maxPrice?: string,
   categories?:  string
   specializations?:  string
+  onlyOnline?:  boolean
 
   sorting?: SortingValues
   term?: string
@@ -29,6 +30,8 @@ interface IFreelanceFindParams  {
   sorting: SortingValues | undefined;
   term: string | undefined;
   sortType: string | null
+  onlyOnline?:  boolean
+
 }
 
 export  {

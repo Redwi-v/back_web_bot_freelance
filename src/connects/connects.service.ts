@@ -122,7 +122,7 @@ export class ConnectsService {
   async getById (id: number | string) {
     try {
 
-      return this.prisma.connect.findUnique({
+      const res = await this.prisma.connect.findUnique({
         where: {
           id: +id
         },
@@ -132,6 +132,19 @@ export class ConnectsService {
           user2: true
         }
       })
+
+     await this.prisma.connect.update({
+        where: {
+          id: +id
+        },
+        data: {
+          isChecked: true
+        }
+      })
+
+      
+
+      return res
       
     } catch (error) {
       console.log(error);
@@ -182,12 +195,7 @@ export class ConnectsService {
       })
 
       const updatedRating = allRating / reviewsCount
-      console.log(updatedRating.toFixed(2));
-      console.log(allRating );
-      console.log( reviewsCount);
       
-      
- 
       await this.prisma.user.update({
         where: {
           telegramId: review.User?.telegramId

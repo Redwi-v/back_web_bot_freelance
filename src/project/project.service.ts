@@ -85,17 +85,23 @@ export class ProjectService {
   async update(data: updateFiles) {
     if (!data.id) return;
 
+    const activeCategories = await this.prisma.project.findUnique({
+      where: {
+        id: +data.id
+      },
+      include: {
+        categories: true
+      }
+    })
+ 
+
     const project = await this.prisma.project.update({
       where: {
         id: +data.id,
       },
       data: {
         categories: {
-          deleteMany: {
-            id: {
-              notIn : data.categories
-            }
-          },
+          disconnect: activeCategories?.categories.map(cat => ({id: cat.id})),
           connect: data.categories?.map(id => ({id: id}))
         },
         description: data.description,
@@ -140,6 +146,17 @@ export class ProjectService {
 
   async delete (id: string) {
     try {
+
+      const res = await this.getById(id)
+
+      res?.images.forEach(({fileName}) => {
+        fs.unlink(join(__dirname, '../../..', 'uploads', fileName), (err) => {
+          if (err) {
+            console.error(err);
+            return err;
+          } 
+        });
+      });
       
       return this.prisma.project.delete({
         where: {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpCode, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpCode, Query, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Prisma } from '@prisma/client';
 import { ICreateUserData, IFreelanceQueryParams } from './auth.types';
@@ -15,14 +15,14 @@ export class AuthController {
     return this.authService.register(userData);
   }
 
+  
+
   @Get('user')
   getUserById(@Query() query: { id: string }) {
 
     return this.authService.getUserById(query.id);
     
   }
-
-
 
   @Get('tgUser')
   async getUserByTgId(@Query() query: { id: string }) {
@@ -31,11 +31,9 @@ export class AuthController {
     
   }
 
-
   @Get('freelancers')
-  getFreelancers(@Query() {categories, maxPrice, minPrice, specializations, sorting, term , sortType}:IFreelanceQueryParams ) {
-
-   
+  getFreelancers(@Query() {categories, maxPrice, minPrice, specializations, sorting, term , sortType, onlyOnline}:IFreelanceQueryParams ) {
+    
     const stringToArr = ( str: string | undefined ) : number[] | null => {
 
       if ( !str ) return null
@@ -48,6 +46,7 @@ export class AuthController {
       maxPrice: maxPrice ? +maxPrice : null,
       categories: stringToArr(categories),
       specializations: stringToArr(specializations),
+      onlyOnline: !!onlyOnline,
 
       sorting: sorting,
       sortType: sortType === 'asc' || sortType === 'desc' ? sortType : null,
@@ -61,7 +60,6 @@ export class AuthController {
   async getCategories() {
     return this.authService.getCategories();
   }
-
 
   @Get('ordersInWork')
   async getMyOrders(@Query() query : {userIdTg: string}) {
@@ -84,5 +82,11 @@ export class AuthController {
   }
 
 
+  @Put('updateVisitTime')
+  async test (@Body() params: {tgId: string}) {
+    
+    this.authService.updateVisitTime(params.tgId)
+    
+  }
 
 }

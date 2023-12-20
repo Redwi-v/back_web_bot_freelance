@@ -23,6 +23,8 @@ export class AuthService {
           about: userData.about,
           telegramLink: userData.telegramLink,
 
+          lastVisitTime: new Date(),   
+
           activeRole: {
             connect: {
               index: userData.activeRoleIndex || 'customer',
@@ -113,10 +115,9 @@ export class AuthService {
   }
 
   async getFreelance(params: IFreelanceFindParams) {
-    const { categories, maxPrice, minPrice, sorting, specializations, term , sortType } = params;
+    const { categories, maxPrice, minPrice, sorting, specializations, term , sortType, onlyOnline } = params;
     try {
-
-
+      
       let findParams: Prisma.UserFindManyArgs = {
         where: {
           activeRole: {
@@ -135,6 +136,19 @@ export class AuthService {
               },
             },
           },
+          lastVisitTime: {
+            gt: new Date(new Date().getMinutes() + 3 )
+          }
+        };
+      }
+
+      if(onlyOnline) {
+        findParams.where = {
+          ...findParams.where,
+          lastVisitTime: {
+            gte: new Date(Date.now() - 3000 * 60 ), // Start of date range
+            lte: new Date(Date.now() ), // End of date range
+          }   
         };
       }
 
@@ -202,15 +216,16 @@ export class AuthService {
 
       
       
-      return this.prisma.user.findMany({
+      const res = await this.prisma.user.findMany({
         ...findParams,
     
-
         include: {
           categories: true,
           specializations: true
         },
       });
+
+      return res
 
     } catch (error) {
       console.log(error);
@@ -295,6 +310,26 @@ export class AuthService {
       
     }
   }
+
+  async updateVisitTime (userTgId: string) {
+    try {      
+      
+      const user = await this.prisma.user.update({
+        where: {
+          telegramId: userTgId,
+        },
+        data: {
+          lastVisitTime: new Date()
+        }
+
+      })
+
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
 }
 
 interface IProfileUpdateData {
